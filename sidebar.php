@@ -214,7 +214,7 @@ if (!empty($this->options->sidebarBlock) && in_array('ShowWebinfo', $this->optio
     <div class="webinfo-item">
       <div class="item-name">当前在线人数 :</div>
       <div class="item-count" >
-      <?php onlinePeople();?>
+      <?php echo getOnlineCount(); ?>
       </div></div>
 <?php endif; ?>
     <div class="webinfo-item">

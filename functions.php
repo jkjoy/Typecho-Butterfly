@@ -832,33 +832,101 @@ function printTag($that)
     <?php endif; ?>
 <?php }
 
-
-//当前人数
+/**
+ * 获取在线人数
+ * 
+ * @return int|false 返回在线人数，失败时返回 false
+ */
 function onlinePeople()
 {
-    $online_log = "usr/themes/butterfly/online.dat"; //保存人数的文件到根目录,
-    $timeout = 30; //30秒内没动作者,认为掉线
-    if (!file_exists($online_log)) {
-        fopen($online_log, "w");
-    }
-    $entries = file($online_log);
-    $temp = array();
-    for ($i = 0; $i < count($entries); $i++) {
-        $entry = explode(",", trim($entries[$i]));
-        if (($entry[0] != getenv('REMOTE_ADDR')) && ($entry[1] > time())) {
-            array_push($temp, $entry[0] . "," . $entry[1] . "\n"); //取出其他浏览者的信息,并去掉超时者,保存进$temp
+    // 使用 Helper 类获取主题路径
+    $theme_dir = Helper::options()->themeFile(Helper::options()->theme);
+    $online_log = $theme_dir . '/online.dat';
+    $timeout = 30;
+
+    try {
+        // 确保目录存在
+        $dir = dirname($online_log);
+        if (!is_dir($dir)) {
+            if (!mkdir($dir, 0777, true)) {
+                throw new Exception("Failed to create directory: " . $dir);
+            }
         }
+
+        // 如果文件不存在，创建文件
+        if (!file_exists($online_log)) {
+            $fp = fopen($online_log, "w");
+            if ($fp === false) {
+                throw new Exception("Failed to create file: " . $online_log);
+            }
+            fclose($fp);
+        }
+
+        // 确保文件可读写
+        if (!is_readable($online_log) || !is_writable($online_log)) {
+            throw new Exception("File is not readable or writable: " . $online_log);
+        }
+
+        // 读取文件内容
+        $entries = file($online_log);
+        if ($entries === false) {
+            throw new Exception("Failed to read file: " . $online_log);
+        }
+
+        $temp = array();
+        foreach ($entries as $line) {
+            $entry = explode(",", trim($line));
+            if (count($entry) == 2) {
+                if (($entry[0] != $_SERVER['REMOTE_ADDR']) && ($entry[1] > time())) {
+                    array_push($temp, $entry[0] . "," . $entry[1] . "\n");
+                }
+            }
+        }
+
+        array_push($temp, $_SERVER['REMOTE_ADDR'] . "," . (time() + ($timeout)) . "\n");
+        $slzxrs = count($temp);
+        $entries = implode("", $temp);
+
+        // 写入文件
+        $fp = fopen($online_log, "w");
+        if ($fp === false) {
+            throw new Exception("Failed to open file for writing: " . $online_log);
+        }
+
+        if (!flock($fp, LOCK_EX)) {
+            fclose($fp);
+            throw new Exception("Failed to acquire file lock");
+        }
+
+        if (fputs($fp, $entries) === false) {
+            flock($fp, LOCK_UN);
+            fclose($fp);
+            throw new Exception("Failed to write to file");
+        }
+
+        flock($fp, LOCK_UN);
+        fclose($fp);
+
+        return $slzxrs;
+
+    } catch (Exception $e) {
+        error_log("Online counter error: " . $e->getMessage());
+        return false;
     }
-    array_push($temp, getenv('REMOTE_ADDR') . "," . (time() + ($timeout)) . "\n"); //更新浏览者的时间
-    $slzxrs = count($temp); //计算在线人数
-    $entries = implode("", $temp);
-    //写入文件
-    $fp = fopen($online_log, "w");
-    flock($fp, LOCK_EX); //flock() 不能在NFS以及其他的一些网络文件系统中正常工作
-    fputs($fp, $entries);
-    flock($fp, LOCK_UN);
-    fclose($fp);
-    echo $slzxrs;
+}
+
+/**
+ * 获取在线人数
+ * 
+ * @return string 返回在线人数或错误信息
+ */
+function getOnlineCount()
+{
+    $count = onlinePeople();
+    if ($count !== false) {
+        return (string)$count;
+    }
+    return '获取在线人数失败';
 }
 
 function only_get_post_view($archive)
