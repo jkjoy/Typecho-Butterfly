@@ -27,9 +27,13 @@ if(array_key_exists("Links", Typecho_Plugin::export()['activated'])){
       <div class='flink-item-name'>{name}</div>
       <div class='flink-item-desc' title='{description}'>{description}</div>
       </a></div>");
-    for($i = 0; $i < count($Links); $i++){
-      echo $Links[$i];
-    }
+      
+      // Add check for null or empty $Links
+      if (!empty($Links) && is_array($Links)) {
+        for($i = 0; $i < count($Links); $i++){
+          echo $Links[$i];
+        }
+      }
 }
 }else{
 if ($this->options->Friends){
