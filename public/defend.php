@@ -30,7 +30,7 @@ if(isset($_COOKIE["ThemePassword"]) && $_COOKIE["ThemePassword"] !==$this->optio
 <div id="error-wrap">
   <div class="error-content">
     <div class="error-img">
-        <img src="https://i.loli.net/2021/10/09/oPZA9nBlTDevy3S.png" data-lazy-src="<?php echo get_ArticleThumbnail($this);?>" alt="403" class="entered">
+        <img src="<?php $this->options->themeUrl('img/error.png'); ?>" data-lazy-src="<?php echo get_ArticleThumbnail($this);?>" alt="403" class="entered">
     </div>
     <div class="error-info">
       <h1 class="error_title">403</h1>

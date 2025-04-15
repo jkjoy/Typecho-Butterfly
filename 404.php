@@ -6,7 +6,8 @@
      <header class="not-top-img" id="page-header">
      <?php  $this->need('public/nav.php'); ?>
 </header>
-    <div id="error-wrap"><div class="error-content"><div class="error-img"><img src="https://i.loli.net/2020/05/19/aKOcLiyPl2JQdFD.png" alt="Page not found" class="entered"></div><div class="error-info"><h1 class="error_title">404</h1><div class="error_subtitle">頁面沒有找到</div></div></div></div></div>
+    <div id="error-wrap"><div class="error-content"><div class="error-img"><img src="<?php $this->options->themeUrl('img/404.png'); ?>" alt="Page not found" class="entered"></div>
+    <div class="error-info"><h1 class="error_title">404</h1><div class="error_subtitle">頁面沒有找到</div></div></div></div></div>
     <?php require_once('public/rightside.php');?>
 <?php if ($this->options->showFramework == 'off'): ?>
 <style>.framework-info{display:none}</style>
@@ -78,7 +79,7 @@ backSpeed: 50
 })
 }
 }
-"function"==typeof Typed?subtitleType():getScript("https://cdn.jsdelivr.net/npm/typed.js/lib/typed.min.js")
+"function"==typeof Typed?subtitleType():getScript("<?php $this->options->themeUrl('js/typed.min.js'); ?>")
 .then(subtitleType)
 </script>
    <?php else: ?>
@@ -96,7 +97,7 @@ new Typed("#subtitle",{
       }
   )}
 )}
-"function"==typeof Typed?subtitleType():getScript("https://cdn.jsdelivr.net/npm/typed.js/lib/typed.min.js")
+"function"==typeof Typed?subtitleType():getScript("<?php $this->options->themeUrl('js/typed.min.js'); ?>")
 .then(subtitleType)
 </script>
     <?php endif ?>

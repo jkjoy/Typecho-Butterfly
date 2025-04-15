@@ -41,7 +41,7 @@
 <div id="error-wrap">
   <div class="error-content">
     <div class="error-img">
-                <img src="https://i.loli.net/2021/10/11/rVR97X3zmoEj2WA.png" data-lazy-src="<?php echo get_ArticleThumbnail($this);?>" alt="到浏览器访问" class="entered">
+                <img src="<?php $this->options->themeUrl('img/404.png'); ?>" data-lazy-src="<?php echo get_ArticleThumbnail($this);?>" alt="到浏览器访问" class="entered">
     </div>
     <div class="error-info">
       <b class="title">{{ title }}</b>

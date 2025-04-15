@@ -179,7 +179,7 @@
               })
             }
           }
-          "function" == typeof Typed ? subtitleType() : getScript("/usr/themes/butterfly/js/typed.min.js")
+          "function" == typeof Typed ? subtitleType() : getScript("<?php $this->options->themeUrl('js/typed.min.js'); ?>")
             .then(subtitleType)
         </script>
       <?php else : ?>
@@ -197,7 +197,7 @@
                 })
             })
           }
-          "function" == typeof Typed ? subtitleType() : getScript("/usr/themes/butterfly/js/typed.min.js")
+          "function" == typeof Typed ? subtitleType() : getScript("<?php $this->options->themeUrl('js/typed.min.js'); ?>")
             .then(subtitleType)
         </script>
       <?php endif ?>

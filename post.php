@@ -93,7 +93,7 @@
         <?php printTag($this); ?>
       </div>
       <div class="post_share">
-        <div class="social-share share-component" data-image="https://tva4.sinaimg.cn/large/007X0Rdygy1ghm2u8yvhdj30sg0g0gp1.jpg" data-sites="facebook,twitter,wechat,weibo,qq">
+        <div class="social-share share-component" data-image="<?php $this->options->themeUrl('img/image.png'); ?>" data-sites="facebook,twitter,wechat,weibo,qq">
           <link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/social-share.js/1.0.16/css/share.min.css" media="all" onload="this.media='all'">
           <script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/social-share.js/1.0.16/js/social-share.min.js" defer=""></script>
         </div>
@@ -193,6 +193,11 @@
   <?php $this->need('post_sidebar.php'); ?>
   <link rel="stylesheet" href="<?php $this->options->themeUrl('css/GrayMac.css'); ?>">
   <script type="text/javascript" src="<?php $this->options->themeUrl('js/prism.js?v1.5.3'); ?>"></script>
+  <script>
+    (function(){if("undefined"!==typeof self&&self.Prism&&self.document)if(Prism.plugins.toolbar){var b=window.ClipboardJS||void 0;b||"function"!==typeof require||(b=require("clipboard"));var e=[];if(!b){var c=document.createElement("script"),d=document.querySelector("head");c.onload=function(){if(b=window.ClipboardJS)for(;e.length;)e.pop()()};c.src="<?php $this->options->themeUrl('js/clipboard.min.js'); ?>";d.appendChild(c)}Prism.plugins.toolbar.registerButton("copy-to-clipboard",function(c){function a(){var a=
+new b(g,{text:function(){return c.code}});a.on("success",function(){g.innerHTML='<div class="copy-notices">\u590d\u5236\u6210\u529f</div>      <i class="fas fa-paste" id="btn-copy-code" style="font-style:normal;"></i>';d()});a.on("error",function(){g.textContent="Press Ctrl+C to copy";d()})}function d(){setTimeout(function(){g.innerHTML='<i class="fas fa-paste" id="btn-copy-code"style="font-style:normal;"> </i>'},1E3)}var g=document.createElement("button");g.innerHTML='<i class="fas fa-paste" id="btn-copy-code"style="font-style:normal;"> </i>';
+b?a():e.push(a);return g})}else console.warn("Copy to Clipboard plugin loaded before Toolbar plugin.")})();
+  </script>
   <script type="text/javascript" src="<?php $this->options->themeUrl('js/clipboard.min.js'); ?>"></script>
   <?php if (!empty($this->options->beautifyBlock) && in_array(
     'showLineNumber',

@@ -26,7 +26,7 @@ function themeConfig($form)
         <input type="submit" name="type" class="btn btn-s" value="删除备份数据" />
         <input type="submit" name="type" class="btn btn-s" value="清除所有缓存" />
     </form>
-    <script src='https://lib.baomitu.com/jquery/1.10.2/jquery.min.js'></script>
+    <!--<script src='https://lib.baomitu.com/jquery/1.10.2/jquery.min.js'></script>-->
     <script src="<?php Helper::options()->themeUrl('js/themecustom.js?v1.5.3'); ?>"></script>
     <script src='https://static.wehao.org/postdomai.js'></script>
     <?php

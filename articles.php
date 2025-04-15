@@ -20,7 +20,7 @@ $this->need('page_header.php');
         $year_tmp = date('Y',$archives->created);
         $mon_tmp = date('m',$archives->created);
         $y=$year; $m=$mon;
-        $erro = "'https://tva1.sinaimg.cn/large/007X0Rdyly1gpaaf55n1rj30ic09u0sw.jpg'";
+        $erro = "<?php $this->options->themeUrl('img/404.jpg'); ?>";
         if ($mon != $mon_tmp && $mon > 0) $output .= '</ul></li>';
         if ($year != $year_tmp && $year > 0) $output .= '</ul>';
         if ($year != $year_tmp) {
