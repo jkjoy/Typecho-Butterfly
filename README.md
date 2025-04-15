@@ -4,6 +4,11 @@
 ![php version](https://img.shields.io/badge/PHP-7.4+-9cf)
 ![license](https://img.shields.io/github/license/wehaox/Typecho-Butterfly?color=FF5531)  
 
+> 老孙修改部分
+本地化静态资源,修改部分资源的绝对地址为相对地址
+修复友链插件无数据时报错
+修复开启在线人数报错
+
 这是 Typecho 版本的 butterfly 主题
 主题好看，但是由于经常换设备并且hexo操作还是不方便，某些功能受限于第三方
 所以就移植了  
