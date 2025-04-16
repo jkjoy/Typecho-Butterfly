@@ -16,29 +16,32 @@ $this->need('page_header.php');
 <?php
 if($this->options->friendset==1){
 if(array_key_exists("Links", Typecho_Plugin::export()['activated'])){
-      $errorimg="'/usr/themes/butterfly/img/friend_404.gif'";
+      $errorimg = "'" . Helper::options()->themeUrl . "/img/friend_404.gif'";
       $shuffle = Helper::options()->linksshuffle;
       $link_limit = Helper::options()->linksIndexNum;
+      $lazyload = "'" . GetLazyLoad() . "'";
       $Links = Links_Plugin::output("
       <div class='flink-list-item'>
       <a target='_blank' href='{url}'>
       <div class='flink-item-icon'>
-      <img onerror=\"this.onerror=null;this.src='/usr/themes/butterfly/img/friend_404.gif'\" src='{GetLazyLoad()}' data-lazy-src='{image}' alt='' class='entered'/></div>
+      <img onerror=\"this.onerror=null;this.src=" . $errorimg . "\" src=$lazyload data-lazy-src='{image}' alt='' class='entered'/></div>
       <div class='flink-item-name'>{name}</div>
       <div class='flink-item-desc' title='{description}'>{description}</div>
       </a></div>");
-      
+
+      echo "<div class=\"flink\">\n    <div class=\"flink-list\">";
       // Add check for null or empty $Links
       if (!empty($Links) && is_array($Links)) {
         for($i = 0; $i < count($Links); $i++){
           echo $Links[$i];
         }
-      }
+      }  
+      echo "\n    </div>\n</div>";
 }
 }else{
 if ($this->options->Friends){
                 if (strpos($this->options->Friends, '||') !== false) {
-                   $errorimg="'/usr/themes/butterfly/img/friend_404.gif'";
+                   $errorimg = "'" . Helper::options()->themeUrl . "/img/friend_404.gif'";
                    $list = "";
                    $txt = $this->options->Friends;
                    $string_arr = explode("\r\n", $txt);

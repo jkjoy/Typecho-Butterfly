@@ -20,7 +20,7 @@ $this->need('page_header.php');
         $year_tmp = date('Y',$archives->created);
         $mon_tmp = date('m',$archives->created);
         $y=$year; $m=$mon;
-        $erro = "<?php $this->options->themeUrl('img/404.jpg'); ?>";
+        $erro = "'" . Helper::options()->themeUrl. "/img/404.jpg'";
         if ($mon != $mon_tmp && $mon > 0) $output .= '</ul></li>';
         if ($year != $year_tmp && $year > 0) $output .= '</ul>';
         if ($year != $year_tmp) {
