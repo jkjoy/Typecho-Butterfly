@@ -837,80 +837,67 @@ function printTag($that)
  * 
  * @return int|false 返回在线人数，失败时返回 false
  */
-function onlinePeople()
-{
+function onlinePeople() {
     // 使用 Helper 类获取主题路径
     $theme_dir = Helper::options()->themeFile(Helper::options()->theme);
-    $online_log = $theme_dir . '/online.dat';
-    $timeout = 30;
+    $filename = $theme_dir . '/online.txt'; // 存储文件路径
+    $cookie_name = 'Typecho_Online_UID';    // Cookie名称
+    $timeout = 30;                          // 超时时间（秒）
 
     try {
         // 确保目录存在
-        $dir = dirname($online_log);
-        if (!is_dir($dir)) {
-            if (!mkdir($dir, 0777, true)) {
-                throw new Exception("Failed to create directory: " . $dir);
+        if (!is_dir(dirname($filename))) {
+            if (!mkdir(dirname($filename), 0755, true)) {
+                throw new Exception("无法创建目录: " . dirname($filename));
             }
         }
 
-        // 如果文件不存在，创建文件
-        if (!file_exists($online_log)) {
-            $fp = fopen($online_log, "w");
-            if ($fp === false) {
-                throw new Exception("Failed to create file: " . $online_log);
-            }
-            fclose($fp);
-        }
+        // 读取当前在线用户数据
+        $online = file_exists($filename) ? file($filename) : array();
+        $now = time();
+        $active_users = array();
 
-        // 确保文件可读写
-        if (!is_readable($online_log) || !is_writable($online_log)) {
-            throw new Exception("File is not readable or writable: " . $online_log);
-        }
-
-        // 读取文件内容
-        $entries = file($online_log);
-        if ($entries === false) {
-            throw new Exception("Failed to read file: " . $online_log);
-        }
-
-        $temp = array();
-        foreach ($entries as $line) {
-            $entry = explode(",", trim($line));
-            if (count($entry) == 2) {
-                if (($entry[0] != $_SERVER['REMOTE_ADDR']) && ($entry[1] > time())) {
-                    array_push($temp, $entry[0] . "," . $entry[1] . "\n");
-                }
+        // 过滤超时用户
+        foreach ($online as $line) {
+            $parts = explode('|', trim($line));
+            if (count($parts) == 2 && ($now - $parts[1]) <= $timeout) {
+                $active_users[$parts[0]] = $parts[1];
             }
         }
 
-        array_push($temp, $_SERVER['REMOTE_ADDR'] . "," . (time() + ($timeout)) . "\n");
-        $slzxrs = count($temp);
-        $entries = implode("", $temp);
-
-        // 写入文件
-        $fp = fopen($online_log, "w");
-        if ($fp === false) {
-            throw new Exception("Failed to open file for writing: " . $online_log);
+        // 生成或获取用户唯一标识（Cookie）
+        if (isset($_COOKIE[$cookie_name])) {
+            $uid = $_COOKIE[$cookie_name];
+        } else {
+            $vid = 0;
+            do {
+                $vid++;
+                $uid = 'U' . $vid;
+            } while (isset($active_users[$uid]));
+            setcookie($cookie_name, $uid, $now + 86400, '/'); // 24小时有效期
         }
 
-        if (!flock($fp, LOCK_EX)) {
-            fclose($fp);
-            throw new Exception("Failed to acquire file lock");
+        // 更新当前用户活跃时间
+        $active_users[$uid] = $now;
+        $online_count = count($active_users);
+
+        // 写入文件（原子操作）
+        $fp = fopen($filename, 'w');
+        if (!$fp || !flock($fp, LOCK_EX)) {
+            throw new Exception("无法锁定文件");
         }
 
-        if (fputs($fp, $entries) === false) {
-            flock($fp, LOCK_UN);
-            fclose($fp);
-            throw new Exception("Failed to write to file");
+        foreach ($active_users as $user => $time) {
+            fwrite($fp, "$user|$time\n");
         }
 
         flock($fp, LOCK_UN);
         fclose($fp);
 
-        return $slzxrs;
+        return $online_count;
 
     } catch (Exception $e) {
-        error_log("Online counter error: " . $e->getMessage());
+        error_log("在线人数统计错误: " . $e->getMessage());
         return false;
     }
 }
